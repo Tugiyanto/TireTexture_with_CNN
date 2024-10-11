@@ -5,7 +5,7 @@ from PIL import Image
 import cv2
 
 # Load model CNN yang sudah dilatih
-model = pickle.load(open('cnn_model.h5', 'rb'))
+model = pickle.load(open('cnn_model.keras', 'rb'))
 
 # Fungsi untuk memuat dan memproses gambar
 def load_and_process_image(img, target_size=(224, 224)):
