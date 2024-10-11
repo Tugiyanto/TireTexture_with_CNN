@@ -1,6 +1,5 @@
 import streamlit as st
 import pickle
-from tensorflow.keras.preprocessing import image
 import numpy as np
 from PIL import Image
 import cv2
