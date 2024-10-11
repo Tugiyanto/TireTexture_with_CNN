@@ -1,12 +1,12 @@
 import streamlit as st
-from tensorflow.keras.models import load_model
+import pickle
 from tensorflow.keras.preprocessing import image
 import numpy as np
 from PIL import Image
 import cv2
 
 # Load model CNN yang sudah dilatih
-model = load_model('cnn_model.h5')
+model = pickle.load(open('cnn_model.h5', 'rb'))
 
 # Fungsi untuk memuat dan memproses gambar
 def load_and_process_image(img, target_size=(224, 224)):
