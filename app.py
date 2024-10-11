@@ -2,7 +2,6 @@ import streamlit as st
 import pickle
 import numpy as np
 from PIL import Image
-import cv2
 
 # Load model CNN yang sudah dilatih
 model = pickle.load(open('cnn_model.keras', 'rb'))
