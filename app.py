@@ -36,7 +36,7 @@ def preprocess_image(image):
     return img_array
 
 # Streamlit App
-st.title('Fashion Item Classifier')
+st.title('Tire Texture Classifier')
 
 uploaded_image = st.file_uploader("Upload image (Don't upload high quality images)", type=["jpg", "jpeg", "png"])
 
