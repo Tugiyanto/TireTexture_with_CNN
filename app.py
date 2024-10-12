@@ -29,7 +29,7 @@ class_names = ['cracked', 'normal']
 # Function to preprocess the uploaded image
 def preprocess_image(image):
     img = Image.open(image)
-    img = img.resize((28, 28))
+    img = img.resize((224, 224))
     img = img.convert('L')  # Convert to grayscale
     img_array = np.array(img) / 255.0
     img_array = img_array.reshape((1, 28, 28, 1))
