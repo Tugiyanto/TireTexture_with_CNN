@@ -18,27 +18,25 @@ tf.keras.utils.get_custom_objects().update({
 
 # Set working directory and model path
 working_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(working_dir, 'cnn_model.keras')
+model_path = os.path.join(working_dir, 'cnn_mode.keras')
 
 # Load the pre-trained model
+model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
 
-model = load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': SparseCategoricalCrossentropy})
-
-
-# Define class labels for Tire Texture
-class_names = ['normal', 'cracked']
+# Define class labels for Fashion MNIST dataset
+class_names = ['cracked', 'normal']
 
 # Function to preprocess the uploaded image
 def preprocess_image(image):
     img = Image.open(image)
-    img = img.resize((224, 224))
+    img = img.resize((28, 28))
     img = img.convert('L')  # Convert to grayscale
     img_array = np.array(img) / 255.0
-    img_array = img_array.reshape((1, 224, 224, 1))
+    img_array = img_array.reshape((1, 28, 28, 1))
     return img_array
 
 # Streamlit App
-st.title('Tire Texture Classifier')
+st.title('Fashion Item Classifier')
 
 uploaded_image = st.file_uploader("Upload image (Don't upload high quality images)", type=["jpg", "jpeg", "png"])
 
@@ -47,7 +45,7 @@ if uploaded_image is not None:
     col1, col2 = st.columns(2)
 
     with col1:
-        resized_img = image.resize((224, 224))
+        resized_img = image.resize((100, 100))
         st.image(resized_img)
 
     with col2:
