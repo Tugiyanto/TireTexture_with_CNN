@@ -18,7 +18,7 @@ tf.keras.utils.get_custom_objects().update({
 
 # Set working directory and model path
 working_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(working_dir, 'cnn_mode.keras')
+model_path = os.path.join(working_dir, 'cnn_model.keras')
 
 # Load the pre-trained model
 model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
