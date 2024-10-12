@@ -18,7 +18,7 @@ tf.keras.utils.get_custom_objects().update({
 
 # Set working directory and model path
 working_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(working_dir, 'model_cnn/cnn_model.h5')
+model_path = os.path.join(working_dir, 'cnn_model.h5')
 
 # Load the pre-trained model
 model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
@@ -38,7 +38,7 @@ def preprocess_image(image):
 # Streamlit App
 st.title('Tire Texture Classifier')
 
-uploaded_image = st.file_uploader("Upload a Fashion MNIST image (Don't upload high quality images)", type=["jpg", "jpeg", "png"])
+uploaded_image = st.file_uploader("Upload image (Don't upload high quality images)", type=["jpg", "jpeg", "png"])
 
 if uploaded_image is not None:
     image = Image.open(uploaded_image)
