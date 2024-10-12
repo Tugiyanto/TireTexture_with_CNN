@@ -32,7 +32,7 @@ def preprocess_image(image):
     img = img.resize((224, 224))
     img = img.convert('L')  # Convert to grayscale
     img_array = np.array(img) / 255.0
-    img_array = img_array.reshape((1, 28, 28, 1))
+    img_array = img_array.reshape((1, 224, 224, 1))
     return img_array
 
 # Streamlit App
