@@ -15,7 +15,7 @@ class CustomSparseCategoricalCrossentropy(SparseCategoricalCrossentropy):
 from tensorflow.keras.models import load_model
 
 # Pastikan CustomSparseCategoricalCrossentropy didefinisikan
-model = load_model('model/cnn_tire_texture_model.keras', 
+model = load_model('cnn_model.keras', 
                    custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
 
 # Set working directory and model path
