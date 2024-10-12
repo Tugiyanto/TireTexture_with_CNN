@@ -23,7 +23,7 @@ model_path = os.path.join(working_dir, 'cnn_model.keras')
 # Load the pre-trained model
 model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
 
-# Define class labels for Fashion MNIST dataset
+# Define class labels for Tire Texture dataset
 class_names = ['cracked', 'normal']
 
 # Function to preprocess the uploaded image
@@ -38,7 +38,7 @@ def preprocess_image(image):
 # Streamlit App
 st.title('Tire Texture Classifier')
 
-uploaded_image = st.file_uploader("Upload image (Don't upload high quality images)", type=["jpg", "jpeg", "png"])
+uploaded_image = st.file_uploader("Upload image (jangan upload dengan kualitas tinggi yaa!)", type=["jpg", "jpeg", "png"])
 
 if uploaded_image is not None:
     image = Image.open(uploaded_image)
