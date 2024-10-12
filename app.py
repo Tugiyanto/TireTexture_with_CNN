@@ -21,7 +21,7 @@ working_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(working_dir, 'cnn_model.keras')
 
 # Load the pre-trained model
-model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
+model = load_model('cnn_tire_texture_model.keras')
 
 # Define class labels for Tire Texture
 class_names = ['normal', 'cracked']
