@@ -21,7 +21,7 @@ working_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(working_dir, 'cnn_model.keras')
 
 # Load the pre-trained model
-model = load_model('model/cnn_tire_texture_model.keras')
+model = load_model('cnn_model.keras')
 
 # Define class labels for Tire Texture
 class_names = ['normal', 'cracked']
