@@ -1,43 +1,35 @@
+# app.py
+
 import streamlit as st
-import pickle
 import numpy as np
-from PIL import Image
-from tensorflow.keras.applications import VGG16
 from tensorflow.keras.models import load_model
+from PIL import Image
+import cv2
 
-# Load the previously saved model
-model = load_model('cnn_model.h5')
+# Load the trained CNN model
+model = load_model('model_cnn.h5')
 
-# Check the architecture of the model
-model.summary()
+# Streamlit app title
+st.title("Aplikasi Klasifikasi Gambar dengan CNN")
 
-
-# Fungsi untuk memuat dan memproses gambar
-def load_and_process_image(img, target_size=(224, 224)):
-    img = img.resize(target_size)  # Resize gambar sesuai input CNN
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)  # Tambah dimensi batch
-    img_array /= 255.  # Normalisasi
-    return img_array
-
-# UI menggunakan Streamlit
-st.title("Pengenalan Citra dengan CNN")
-st.write("Unggah gambar untuk deteksi")
-
-uploaded_file = st.file_uploader("Pilih file gambar", type=["jpg", "png"])
+# Upload image section
+uploaded_file = st.file_uploader("Upload gambar untuk diklasifikasi", type=["png", "jpg", "jpeg"])
 
 if uploaded_file is not None:
-    # Tampilkan gambar yang diunggah
-    img = Image.open(uploaded_file)
-    st.image(img, caption="Gambar yang akan diunggah", use_column_width=True)
+    # Convert the uploaded image to an array
+    image = Image.open(uploaded_file)
+    st.image(image, caption='Gambar yang diupload', use_column_width=True)
     
-    # Memproses gambar
-    st.write("Memproses gambar...")
-    processed_image = load_and_process_image(img)
+    # Preprocess the image to fit the model input size
+    img_array = np.array(image)
+    img_array = cv2.resize(img_array, (28, 28))  # Resize sesuai input model
+    img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
+    img_array = img_array.reshape(1, 28, 28, 1)  # Reshape to fit the model input
+    img_array = img_array.astype('float32') / 255.0  # Normalize pixel values
     
-    # Melakukan prediksi
-    prediction = model.predict(processed_image)
-    pred_class = np.argmax(prediction, axis=1)  # Kelas prediksi
+    # Make prediction
+    prediction = model.predict(img_array)
+    predicted_class = np.argmax(prediction)
     
-    # Menampilkan hasil prediksi
-    st.write(f"Hasil Prediksi: {pred_class[0]}")
+    # Display prediction
+    st.write(f"Prediksi: {predicted_class}")
