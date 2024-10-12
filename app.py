@@ -1,35 +1,62 @@
-# app.py
 
 import streamlit as st
-import numpy as np
-from tensorflow.keras.models import load_model
+import tensorflow as tf
 from PIL import Image
-import cv2
+import numpy as np
+import os
 
-# Load the trained CNN model
-model = load_model('model_cnn.h5')
+# Custom loss function to handle deserialization
+from tensorflow.keras.losses import SparseCategoricalCrossentropy
 
-# Streamlit app title
-st.title("Aplikasi Klasifikasi Gambar dengan CNN")
+class CustomSparseCategoricalCrossentropy(SparseCategoricalCrossentropy):
+    def __init__(self, reduction='auto', name='sparse_categorical_crossentropy', from_logits=False, ignore_class=None):
+        super().__init__(reduction=reduction, name=name, from_logits=from_logits, ignore_class=ignore_class)
 
-# Upload image section
-uploaded_file = st.file_uploader("Upload gambar untuk diklasifikasi", type=["png", "jpg", "jpeg"])
+# Register the custom loss function
+tf.keras.utils.get_custom_objects().update({
+    'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy
+})
 
-if uploaded_file is not None:
-    # Convert the uploaded image to an array
-    image = Image.open(uploaded_file)
-    st.image(image, caption='Gambar yang diupload', use_column_width=True)
-    
-    # Preprocess the image to fit the model input size
-    img_array = np.array(image)
-    img_array = cv2.resize(img_array, (28, 28))  # Resize sesuai input model
-    img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
-    img_array = img_array.reshape(1, 28, 28, 1)  # Reshape to fit the model input
-    img_array = img_array.astype('float32') / 255.0  # Normalize pixel values
-    
-    # Make prediction
-    prediction = model.predict(img_array)
-    predicted_class = np.argmax(prediction)
-    
-    # Display prediction
-    st.write(f"Prediksi: {predicted_class}")
+# Set working directory and model path
+working_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(working_dir, 'cnn_model.h5')
+
+# Load the pre-trained model
+model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
+
+# Define class labels for Tire Texture
+class_names = ['normal', 'cracked']
+
+# Function to preprocess the uploaded image
+def preprocess_image(image):
+    img = Image.open(image)
+    img = img.resize((28, 28))
+    img = img.convert('L')  # Convert to grayscale
+    img_array = np.array(img) / 255.0
+    img_array = img_array.reshape((1, 28, 28, 1))
+    return img_array
+
+# Streamlit App
+st.title('Tire Texture Classifier')
+
+uploaded_image = st.file_uploader("Upload a Fashion MNIST image (Don't upload high quality images)", type=["jpg", "jpeg", "png"])
+
+if uploaded_image is not None:
+    image = Image.open(uploaded_image)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        resized_img = image.resize((100, 100))
+        st.image(resized_img)
+
+    with col2:
+        if st.button('Classify'):
+            # Preprocess the uploaded image
+            img_array = preprocess_image(uploaded_image)
+
+            # Make a prediction using the pre-trained model
+            result = model.predict(img_array)
+            predicted_class = np.argmax(result)
+            prediction = class_names[predicted_class]
+
+            st.success(f'Prediction: {prediction}')
