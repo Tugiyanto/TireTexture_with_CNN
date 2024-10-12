@@ -2,9 +2,15 @@ import streamlit as st
 import pickle
 import numpy as np
 from PIL import Image
+from tensorflow.keras.applications import VGG16
+from tensorflow.keras.models import load_model
 
-# Load model CNN yang sudah dilatih
-model = pickle.load(open('cnn_model.keras', 'rb'))
+# Load the previously saved model
+model = load_model('cnn_model.h5')
+
+# Check the architecture of the model
+model.summary()
+
 
 # Fungsi untuk memuat dan memproses gambar
 def load_and_process_image(img, target_size=(224, 224)):
