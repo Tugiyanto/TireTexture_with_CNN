@@ -24,7 +24,7 @@ model_path = os.path.join(working_dir, 'cnn_model.keras')
 model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
 
 # Define class labels for Tire Texture dataset
-class_names = ['normal', 'cracked']
+class_names = ['normal', 'cracked', 'normal', 'cracked']
 
 # Function to preprocess the uploaded image
 def preprocess_image(image):
