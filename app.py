@@ -12,11 +12,6 @@ class CustomSparseCategoricalCrossentropy(SparseCategoricalCrossentropy):
         super().__init__(reduction=reduction, name=name, from_logits=from_logits, ignore_class=ignore_class)
 
 # Register the custom loss function
-from tensorflow.keras.models import load_model
-
-# Pastikan CustomSparseCategoricalCrossentropy didefinisikan
-model = load_model('cnn_model.keras', 
-                   custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
 
 # Set working directory and model path
 working_dir = os.path.dirname(os.path.abspath(__file__))
