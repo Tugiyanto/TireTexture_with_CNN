@@ -1,62 +1,45 @@
 import streamlit as st
-import tensorflow as tf
-from PIL import Image
 import numpy as np
-import os
+from PIL import Image
+import tensorflow as tf
 
-# Custom loss function to handle deserialization
-from tensorflow.keras.losses import SparseCategoricalCrossentropy
+# Fungsi untuk memuat model (pastikan Anda sudah menyimpan model Anda)
+@st.cache_resource
+def load_model():
+    model = tf.keras.models.load_model('cnn_model.keras')  # Ganti dengan path model Anda
+    return model
 
-class CustomSparseCategoricalCrossentropy(SparseCategoricalCrossentropy):
-    def __init__(self, reduction='auto', name='sparse_categorical_crossentropy', from_logits=False, ignore_class=None):
-        super().__init__(reduction=reduction, name=name, from_logits=from_logits, ignore_class=ignore_class)
+def predict_texture(image, model):
+    # Preprocessing gambar sesuai kebutuhan model Anda
+    image = image.resize((224, 224))  # Ganti ukuran sesuai dengan input model Anda
+    image_array = np.array(image) / 255.0  # Normalisasi
+    image_array = np.expand_dims(image_array, axis=0)  # Tambahkan dimensi batch
 
-# Register the custom loss function
-tf.keras.utils.get_custom_objects().update({
-    'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy
-})
+    predictions = model.predict(image_array)
+    return predictions
 
-# Set working directory and model path
-working_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(working_dir, 'cnn_model.keras')
+# Muat model
+model = load_model()
 
-# Load the pre-trained model
-model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
+# Tampilan aplikasi Streamlit
+st.title("Klasifikasi Tekstur Ban")
+st.write("Upload gambar ban untuk mengetahui teksturnya.")
 
-class_names = ['normal', 'cracked']  # Ganti dengan kelas yang sesuai
-   
+uploaded_file = st.file_uploader("Pilih file gambar", type=["jpg", "png", "jpeg"])
 
+if uploaded_file is not None:
+    # Tampilkan gambar yang diunggah
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Gambar yang diunggah", use_column_width=True)
 
-# Function to preprocess the uploaded image
-def preprocess_image(image):
-    img = Image.open(image)
-    img = img.resize((224, 224))
-    img = img.convert('L')  # Convert to grayscale
-    img_array = np.array(img) / 255.0
-    img_array = img_array.reshape((1, 224, 224, 1))
-    return img_array
+    # Prediksi dengan model
+    predictions = predict_texture(image, model)
 
-# Streamlit App
-st.title('Tire Texture Classifier')
+    # Ambil label prediksi (pastikan label sesuai dengan yang ada di model Anda)
+    class_names = ['normal', 'cracked']  # Ganti dengan kelas yang sesuai
+    predicted_class = class_names[np.argmax(predictions)]
 
-uploaded_image = st.file_uploader("Upload image (jangan upload dengan kualitas tinggi yaa!)", type=["jpg", "jpeg", "png"])
+    st.write(f"Prediksi: **{predicted_class}**")
+    st.write(f"Probabilitas: {predictions[0][np.argmax(predictions)]:.2f}")
 
-if uploaded_image is not None:
-    image = Image.open(uploaded_image)
-    col1, col2 = st.columns(2)
-
-    with col1:
-        resized_img = image.resize((100, 100))
-        st.image(resized_img)
-
-    with col2:
-        if st.button('Classify'):
-            # Preprocess the uploaded image
-            img_array = preprocess_image(uploaded_image)
-
-            # Make a prediction using the pre-trained model
-            result = model.predict(img_array)
-            predicted_class = np.argmax(result)
-            prediction = class_names[predicted_class]
-
-            st.success(f'Prediction: {prediction}')
+st.write("\n\nMade with ❤️ using Streamlit")
