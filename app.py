@@ -11,7 +11,7 @@ def load_model():
 
 def predict_texture(image, model):
     # Preprocessing gambar sesuai kebutuhan model Anda
-    image = image.resize((224, 224))  # Ganti ukuran sesuai dengan input model Anda
+    image = image.resize((100, 100))  # Ganti ukuran sesuai dengan input model Anda
     image_array = np.array(image) / 255.0  # Normalisasi
     image_array = np.expand_dims(image_array, axis=0)  # Tambahkan dimensi batch
 
