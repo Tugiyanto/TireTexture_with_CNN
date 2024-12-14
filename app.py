@@ -24,7 +24,7 @@ model_path = os.path.join(working_dir, 'cnn_model.keras')
 model = tf.keras.models.load_model(model_path, custom_objects={'SparseCategoricalCrossentropy': CustomSparseCategoricalCrossentropy})
 
 class_names = ['normal', 'cracked']  # Ganti dengan kelas yang sesuai
-    predicted_class = class_names[np.argmax(predictions)]
+   
 
 
 # Function to preprocess the uploaded image
